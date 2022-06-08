@@ -31,10 +31,10 @@
     </div>
     }
 
-    @if (ViewData["Result"] is not null)
+    @if (ViewData["Result"] is ISO8601 result)
     {
     <div>
-        <pre><code>@(DisplayResult((ISO8601)(ViewData["Result"])))</code></pre>
+        <pre><code>@(DisplayResult(result))</code></pre>
         JSON endpoint: <a href="/@(ViewData["InputString"])">/@(ViewData["InputString"])</a>
     </div>
     }
