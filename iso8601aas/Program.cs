@@ -36,4 +36,7 @@ object TryParseDate (string date) {
     catch (ArgumentOutOfRangeException) {
         return new { Error = "Invalid input" };
     }
+    catch (NotImplementedException) {
+        return new { Error = "Not implemented" };
+    }
 }

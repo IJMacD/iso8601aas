@@ -22,7 +22,16 @@ public class ISO8601Date : ISO8601 {
         }
 
         if (Regex.IsMatch(spec, @"^(\d{4})-(\d{2})$")) {
-            return new ISO8601Date(int.Parse(spec.Substring(0,4)), int.Parse(spec.Substring(5,2)));
+            var year = int.Parse(spec.Substring(0,4));
+            var month = int.Parse(spec.Substring(5,2));
+
+            if (month > 20) {
+                return new ISO8601Date(year) {
+                    SubYearGrouping = month
+                };
+            }
+
+            return new ISO8601Date(year, month);
         }
 
         // Forbidden format
@@ -86,14 +95,15 @@ public class ISO8601Date : ISO8601 {
 
     public override string Canonical {
         get {
-            if (Century.HasValue)   return Century.ToString()!;
-            if (Decade.HasValue)    return Decade.ToString()!;
-            if (Day.HasValue)       return InclusiveStart.ToString("yyyy-MM-dd");
-            if (Month.HasValue)     return InclusiveStart.ToString("yyyy-MM");
-            if (YearDay.HasValue)   return $"{Year.ToString()!.PadLeft(4, '0')}-{YearDay!.ToString()!.PadLeft(3, '0')}";
-            if (WeekDay.HasValue)   return $"{WeekYear.ToString()!.PadLeft(4, '0')}-W{Week!.ToString()!.PadLeft(2, '0')}-{WeekDay}";
-            if (Week.HasValue)      return $"{WeekYear.ToString()!.PadLeft(4, '0')}-W{Week!.ToString()!.PadLeft(2, '0')}";
-            if (Year.HasValue)      return Year.ToString()!.PadLeft(4, '0');
+            if (Century is int)             return Century.ToString()!;
+            if (Decade is int)              return Decade.ToString()!;
+            if (Day is int)                 return InclusiveStart.ToString("yyyy-MM-dd");
+            if (Month is int)               return InclusiveStart.ToString("yyyy-MM");
+            if (YearDay is int)             return $"{Year.ToString()!.PadLeft(4, '0')}-{YearDay!.ToString()!.PadLeft(3, '0')}";
+            if (WeekDay is int)             return $"{WeekYear.ToString()!.PadLeft(4, '0')}-W{Week!.ToString()!.PadLeft(2, '0')}-{WeekDay}";
+            if (Week is int)                return $"{WeekYear.ToString()!.PadLeft(4, '0')}-W{Week!.ToString()!.PadLeft(2, '0')}";
+            if (SubYearGrouping is int)     return $"{Year.ToString()!.PadLeft(4, '0')}-{SubYearGrouping}";
+            if (Year is int)                return Year.ToString()!.PadLeft(4, '0');
             return String.Empty;
         }
     }
@@ -189,20 +199,68 @@ public class ISO8601Date : ISO8601 {
 
     private int? _subYearGrouping = null;
 
-    private int? SubYearGrouping {
+    public int? SubYearGrouping {
         get => _subYearGrouping;
-         set {
-            if (_subYearGrouping < 20) throw new ArgumentOutOfRangeException();
-            if (_subYearGrouping > 40) throw new ArgumentOutOfRangeException();
+        private set {
+            // Outside spec
+            if (value < 21 || value > 41)
+                throw new ArgumentOutOfRangeException();
 
-            if (Year is not null && value is not null) {
-                InclusiveStart = new DateTime((int)Year, 1, 1).AddDays((int)value - 1);
+            // Can't implement hemisphere-independent seasons
+            if (value < 25) throw new NotImplementedException();
 
-                if (InclusiveStart.Year != Year) {
-                    throw new ArgumentOutOfRangeException();
+            if (Year is int y && value is int v) {
+
+                if (v < 29) {
+                    // Northern hemisphere meteorological seasons
+                    // Spring starts --03-01
+                    // Summer starts --06-01
+                    // Autumn starts --09-01
+                    // Winter starts --12-01
+                    InclusiveStart = new DateTime(y, 3, 1).AddMonths((v - 25) * 3);
+                    ExclusiveEnd = InclusiveStart.AddMonths(3);
                 }
+                else if (v < 33) {
+                    // Southern hemisphere meteorological seasons
+                    // Spring starts --09-01
+                    // Summer starts --12-01
+                    // Autumn starts --03-01
+                    // Winter starts --06-01
+                    InclusiveStart = new DateTime(v < 31 ? y : y - 1, 9, 1).AddMonths((v - 29) * 3);
+                    ExclusiveEnd = InclusiveStart.AddMonths(3);
+                }
+                else {
+                    int i, step;
 
-                ExclusiveEnd = InclusiveStart.AddDays(1);
+                    switch (v) {
+                        // Quarters
+                        case 33:
+                        case 34:
+                        case 35:
+                        case 36:
+                            i = (v - 33);
+                            step = 3;
+                            break;
+                        // Quadrimester
+                        case 37:
+                        case 38:
+                        case 39:
+                            i = (v - 37);
+                            step = 4;
+                            break;
+                        // Semestral
+                        case 40:
+                        case 41:
+                            i = (v - 40);
+                            step = 6;
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    };
+
+                    InclusiveStart = new DateTime(y, 1, 1).AddMonths(i * step);
+                    ExclusiveEnd = InclusiveStart.AddMonths(step);
+                }
             }
 
             _subYearGrouping = value;
