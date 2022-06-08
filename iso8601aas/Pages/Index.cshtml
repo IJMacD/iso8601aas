@@ -1,0 +1,63 @@
+﻿@page
+@using System.Runtime.InteropServices
+@using System.IO
+@using System.Diagnostics
+@using System.Text.Json
+@using System.Text.RegularExpressions
+@model IndexModel
+@{
+    ViewData["Title"] = "ISO 8601 as a Service";
+
+    string inputClass = ViewData["Error"] is null ? "" : "is-invalid";
+}
+
+<div class="text-center">
+    <h1>@(ViewData["Title"])</h1>
+</div>
+
+<div>
+    <form method="post" asp-page-handler="parse" class="form-inline" style="display: flex;margin:1em 0">
+        <label for="input-string">Input String</label>
+        <div class="input-group input-group-lg">
+            <input type="text" class="form-control @inputClass" id="input-string" name="inputString" value=@(ViewData["InputString"])>
+        </div>
+        <button class="btn btn-primary">Check</button>
+    </form>
+
+    @if (ViewData["Error"] is not null)
+    {
+    <div style="color: red;font-family:monospace;">
+        @(ViewData["Error"])
+    </div>
+    }
+
+    @if (ViewData["Result"] is not null)
+    {
+    <div>
+        <pre><code>@(DisplayResult((ISO8601)(ViewData["Result"])))</code></pre>
+        JSON endpoint: <a href="/@(ViewData["InputString"])">/@(ViewData["InputString"])</a>
+    </div>
+    }
+</div>
+
+@{
+    string DisplayResult (ISO8601 result) {
+        var options = new JsonSerializerOptions () { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+        string json;
+
+        if (result is ISO8601DateTime)
+            json = JsonSerializer.Serialize((ISO8601DateTime)result, options);
+
+        else if (result is ISO8601Date)
+            json = JsonSerializer.Serialize((ISO8601Date)result, options);
+
+        else if (result is ISO8601Time)
+            json = JsonSerializer.Serialize((ISO8601Time)result, options);
+        else
+            json = JsonSerializer.Serialize(result, options);
+
+
+        return json;
+    }
+}

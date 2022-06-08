@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aspnetapp", "aspnetapp\aspnetapp.csproj", "{5FDCC1ED-9F59-47ED-969D-5E463CDD8D52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iso8601aas", "iso8601aas\iso8601aas.csproj", "{5FDCC1ED-9F59-47ED-969D-5E463CDD8D52}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1E1C7ABA-885A-4273-811E-B66AD28F9A87}"
 	ProjectSection(SolutionItems) = preProject

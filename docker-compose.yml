@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    image: iso8601aas
+    container_name: iso8601aas
+    ports:
+      - "8005:80"
+    restart: always

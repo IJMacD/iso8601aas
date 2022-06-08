@@ -16,10 +16,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.MapGet("/Environment", () =>
-{
-    return new EnvironmentInfo();
-});
+app.MapGet("/{date}", TryParseDate);
 
 app.UseRouting();
 
@@ -28,3 +25,15 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+
+object TryParseDate (string date) {
+    try {
+        return ISO8601.Parse(date);
+    }
+    catch (FormatException) {
+        return new { Error = "Cannot parse input" };
+    }
+    catch (ArgumentOutOfRangeException) {
+        return new { Error = "Invalid input" };
+    }
+}
