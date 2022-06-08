@@ -95,15 +95,33 @@ public class ISO8601Date : ISO8601 {
 
     public override string Canonical {
         get {
-            if (Century is int)             return Century.ToString()!;
-            if (Decade is int)              return Decade.ToString()!;
+            if (Century is int c)           return c.ToString().PadLeft(2, '0');
+            if (Decade is int d)            return d.ToString().PadLeft(3, '0');
             if (Day is int)                 return InclusiveStart.ToString("yyyy-MM-dd");
             if (Month is int)               return InclusiveStart.ToString("yyyy-MM");
-            if (YearDay is int)             return $"{Year.ToString()!.PadLeft(4, '0')}-{YearDay!.ToString()!.PadLeft(3, '0')}";
-            if (WeekDay is int)             return $"{WeekYear.ToString()!.PadLeft(4, '0')}-W{Week!.ToString()!.PadLeft(2, '0')}-{WeekDay}";
-            if (Week is int)                return $"{WeekYear.ToString()!.PadLeft(4, '0')}-W{Week!.ToString()!.PadLeft(2, '0')}";
-            if (SubYearGrouping is int)     return $"{Year.ToString()!.PadLeft(4, '0')}-{SubYearGrouping}";
-            if (Year is int)                return Year.ToString()!.PadLeft(4, '0');
+
+            if (WeekYear is int wy && Week is int w) {
+                var weekYearString = wy.ToString().PadLeft(4, '0');
+
+                if (WeekDay is int wd) {
+                    return $"{weekYearString}-W{w.ToString().PadLeft(2, '0')}-{wd}";
+                }
+
+                return $"{weekYearString}-W{w.ToString().PadLeft(2, '0')}";
+            }
+
+            if (Year is int y) {
+                var yearString = y.ToString().PadLeft(4, '0');
+
+                if (YearDay is int yd)
+                    return $"{yearString}-{yd.ToString().PadLeft(3, '0')}";
+
+                if (SubYearGrouping is int syg)
+                    return $"{yearString}-{syg}";
+
+                return yearString;
+            }
+
             return String.Empty;
         }
     }
