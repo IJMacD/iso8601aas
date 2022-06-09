@@ -21,7 +21,10 @@ public class ISO8601Date : ISO8601 {
             return new ISO8601Date(int.Parse(spec));
         }
 
-        if (Regex.IsMatch(spec, @"^(\d{4})-(\d{2})$")) {
+        // ISO 8601-1:2019 § 3.2.1
+        // Specifies Hyphen or Hyphen-Minus
+
+        if (Regex.IsMatch(spec, @"^(\d{4})[-‐](\d{2})$")) {
             var year = int.Parse(spec.Substring(0,4));
             var month = int.Parse(spec.Substring(5,2));
 
@@ -34,12 +37,13 @@ public class ISO8601Date : ISO8601 {
             return new ISO8601Date(year, month);
         }
 
+        // ISO 8601-1:2019 § 5.2.2.2
         // Forbidden format
         // if (Regex.IsMatch(spec, @"^(\d{4})(\d{2})$")) {
         //     return new ISO8601Date(int.Parse(spec.Substring(0,4)), int.Parse(spec.Substring(4,2)));
         // }
 
-        if (Regex.IsMatch(spec, @"^(\d{4})-(\d{2})-(\d{2})$")) {
+        if (Regex.IsMatch(spec, @"^(\d{4})[-‐](\d{2})[-‐](\d{2})$")) {
             return new ISO8601Date(int.Parse(spec.Substring(0,4)), int.Parse(spec.Substring(5,2)), int.Parse(spec.Substring(8,2)));
         }
 
@@ -47,19 +51,19 @@ public class ISO8601Date : ISO8601 {
             return new ISO8601Date(int.Parse(spec.Substring(0,4)), int.Parse(spec.Substring(4,2)), int.Parse(spec.Substring(6,2)));
         }
 
-        var ordinalRegex = new Regex(@"^(\d{4})-?(\d{3})$");
+        var ordinalRegex = new Regex(@"^(\d{4})[-‐]?(\d{3})$");
         if (ordinalRegex.IsMatch(spec)) {
             var groups = ordinalRegex.Match(spec).Groups;
             return new ISO8601Date(int.Parse(groups[1].Value)){ YearDay = int.Parse(groups[2].Value) };
         }
 
-        var weekRegex = new Regex(@"^(\d{4})-?W(\d{2})$");
+        var weekRegex = new Regex(@"^(\d{4})[-‐]?W(\d{2})$");
         if (weekRegex.IsMatch(spec)) {
             var groups = weekRegex.Match(spec).Groups;
             return new ISO8601Date(){ WeekYear = int.Parse(groups[1].Value), Week = int.Parse(groups[2].Value) };
         }
 
-        var weekDayRegex = new Regex(@"^(\d{4})-W(\d{2})-(\d)$");
+        var weekDayRegex = new Regex(@"^(\d{4})[-‐]W(\d{2})-(\d)$");
         if (weekDayRegex.IsMatch(spec)) {
             var groups = weekDayRegex.Match(spec).Groups;
             return new ISO8601Date(){ WeekYear = int.Parse(groups[1].Value), Week = int.Parse(groups[2].Value), WeekDay = int.Parse(groups[3].Value) };
@@ -91,6 +95,8 @@ public class ISO8601Date : ISO8601 {
         }
     }
 
+    public override string ToString () => Canonical;
+
     public override string Type => "date";
 
     public override string Canonical {
@@ -104,7 +110,8 @@ public class ISO8601Date : ISO8601 {
                 var weekYearString = wy.ToString().PadLeft(4, '0');
 
                 if (WeekDay is int wd) {
-                    return $"{weekYearString}-W{w.ToString().PadLeft(2, '0')}-{wd}";
+                    // return $"{weekYearString}-W{w.ToString().PadLeft(2, '0')}-{wd}";
+                    return InclusiveStart.ToString("yyyy-MM-dd");
                 }
 
                 return $"{weekYearString}-W{w.ToString().PadLeft(2, '0')}";
@@ -114,7 +121,8 @@ public class ISO8601Date : ISO8601 {
                 var yearString = y.ToString().PadLeft(4, '0');
 
                 if (YearDay is int yd)
-                    return $"{yearString}-{yd.ToString().PadLeft(3, '0')}";
+                    // return $"{yearString}-{yd.ToString().PadLeft(3, '0')}";
+                    return InclusiveStart.ToString("yyyy-MM-dd");
 
                 if (SubYearGrouping is int syg)
                     return $"{yearString}-{syg}";

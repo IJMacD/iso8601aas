@@ -4,6 +4,8 @@ public class ISO8601Time : ISO8601 {
     public static new ISO8601Time Parse (string spec) {
         int? zoneOffset = null;
 
+        // ISO 8601-1:2019 § 3.2.1
+        // Can use Minus or Hyphen-Minus
         var zoneRegex = new Regex(@"[-+−](\d{2})(?::?(\d{2}))?$");
 
         if (spec.EndsWith("Z")) {
@@ -21,6 +23,12 @@ public class ISO8601Time : ISO8601 {
             if (zm > 59) throw new FormatException();
 
             zoneOffset = (match.Value[0] == '+' ? 1 : -1) * (zh * 60 + zm);
+
+            // ISO 8601-1:2019 § 4.3.13
+            // Zero offset must use '+'
+            if (zoneOffset == 0 && match.Value[0] != '+') {
+                throw new FormatException();
+            }
         }
 
         var hourRegex = new Regex(@"^T?(\d{2}([,.]\d+)?)$");
@@ -141,6 +149,8 @@ public class ISO8601Time : ISO8601 {
     public override string Type => "time";
 
     private DateTime _value { get; }
+
+    public override string ToString () => Canonical;
 
     public override string Canonical => _value.ToString("o").Substring(10);
 

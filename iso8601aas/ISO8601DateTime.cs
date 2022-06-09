@@ -6,6 +6,8 @@ public class ISO8601DateTime : ISO8601 {
 
     private DateTime _value;
 
+    public override string ToString() => Canonical;
+
     public override string Canonical => _value.ToString("o");
 
     public int? Year { get; private set; } = null;
@@ -32,6 +34,23 @@ public class ISO8601DateTime : ISO8601 {
 
     public int? ZoneMinute { get; private set; } = null;
 
+    public static new ISO8601DateTime Parse (string input) {
+        if (input.IndexOf('T') <= 0) {
+            throw new FormatException();
+        }
+
+        var parts = input.Split('T');
+
+        if (parts.Length > 2) {
+            throw new FormatException();
+        }
+
+        var datePart = ISO8601Date.Parse(parts[0]);
+        var timePart = ISO8601Time.Parse("T" + parts[1]);
+
+        return FromDateAndTime(datePart, timePart);
+    }
+
     public static ISO8601DateTime FromDateAndTime (ISO8601Date date, ISO8601Time time) {
         if (date.Day is null && date.WeekDay is null && date.YearDay is null) {
             throw new FormatException();
@@ -57,4 +76,6 @@ public class ISO8601DateTime : ISO8601 {
             ZoneMinute  = time.ZoneMinute,
         };
     }
+
+    public static implicit operator ISO8601DateTime (string input) => Parse(input);
 }
