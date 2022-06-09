@@ -75,7 +75,7 @@ public class ISO8601Date : ISO8601 {
             return new ISO8601Date(){ WeekYear = int.Parse(groups[1].Value), Week = int.Parse(groups[2].Value), WeekDay = int.Parse(groups[3].Value) };
         }
 
-        throw new FormatException($"Spec({spec.Length}) not matched '{spec}'");
+        throw new FormatException();
     }
 
     public ISO8601Date (int year, int? month = null, int? day = null) {

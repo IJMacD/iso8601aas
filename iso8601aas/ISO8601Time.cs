@@ -107,6 +107,9 @@ public class ISO8601Time : ISO8601 {
             }
         }
 
+        // Formats hhmm and hh might be considered ambiguous but are explicity
+        // given as valid examples in ISO 8601-1:2019 Annex A Table A.9
+
         var hourRegex = new Regex(@"^T?(\d{2}([,.]\d+)?)$");
         if (hourRegex.IsMatch(spec)) {
             var groups = hourRegex.Match(spec).Groups;
@@ -115,13 +118,13 @@ public class ISO8601Time : ISO8601 {
 
         if (forceExtended is null || !(bool)forceExtended) {
 
-            var hourMinuteBasicRegex = new Regex(@"^T(\d{2})(\d{2}([,.]\d+)?)$");
+            var hourMinuteBasicRegex = new Regex(@"^T?(\d{2})(\d{2}([,.]\d+)?)$");
             if (hourMinuteBasicRegex.IsMatch(spec)) {
                 var groups = hourMinuteBasicRegex.Match(spec).Groups;
                 return new ISO8601Time(int.Parse(groups[1].Value), double.Parse(groups[2].Value.Replace(",",".")), zoneOffset);
             }
 
-            var timeRegex = new Regex(@"^T(\d{2})(\d{2})(\d{2}([,.]\d+)?)$");
+            var timeRegex = new Regex(@"^T?(\d{2})(\d{2})(\d{2}([,.]\d+)?)$");
             if (timeRegex.IsMatch(spec)) {
                 var groups = timeRegex.Match(spec).Groups;
                 return new ISO8601Time(int.Parse(groups[1].Value), int.Parse(groups[2].Value), double.Parse(groups[3].Value.Replace(",",".")), zoneOffset);
