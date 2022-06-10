@@ -16,10 +16,10 @@
 </div>
 
 <div>
-    <form method="post" asp-page-handler="parse" class="form-inline" style="display: flex;margin:1em 0">
+    <form method="get" class="form-inline" style="display: flex;margin:1em 0">
         <label for="input-string">Input String</label>
         <div class="input-group input-group-lg">
-            <input type="text" class="form-control @inputClass" id="input-string" name="inputString" value=@(ViewData["InputString"])>
+            <input type="text" class="form-control @inputClass" id="input-string" name="input" value="@(ViewData["InputString"])">
         </div>
         <button class="btn btn-primary">Check</button>
     </form>

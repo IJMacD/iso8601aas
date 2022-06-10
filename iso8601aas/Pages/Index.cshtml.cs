@@ -11,18 +11,16 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public void OnGet(string input)
     {
-
-    }
-
-    public void OnPostParse (string inputString) {
-        ViewData["InputString"] = inputString;
-        try {
-            ViewData["Result"] = ISO8601.Parse(inputString);
-        }
-        catch {
-            ViewData["Error"] = "Unable to parse";
+        if (input is string) {
+            ViewData["InputString"] = input;
+            try {
+                ViewData["Result"] = ISO8601.Parse(input);
+            }
+            catch {
+                ViewData["Error"] = "Unable to parse";
+            }
         }
     }
 }
