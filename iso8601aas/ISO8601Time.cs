@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 public class ISO8601Time : ISO8601 {
 
     public ISO8601Time (double hour, int? zoneOffset = null) {
+        if (hour < 0.0 || hour >= 24.0) throw new ArgumentOutOfRangeException();
+
         _ticks = (long)(hour * 3.6e10);
         _zoneOffset = zoneOffset;
 
@@ -12,6 +14,9 @@ public class ISO8601Time : ISO8601 {
     }
 
     public ISO8601Time (int hour, double minute, int? zoneOffset = null) {
+        if (hour < 0 || hour > 23) throw new ArgumentOutOfRangeException();
+        if (minute < 0.0 || minute >= 60.0) throw new ArgumentOutOfRangeException();
+
         _ticks = (hour * (long)3.6e10) + (long)(minute * 6e8);
         _zoneOffset = zoneOffset;
 
@@ -22,6 +27,10 @@ public class ISO8601Time : ISO8601 {
     }
 
     public ISO8601Time (int hour, int minute, double second, int? zoneOffset = null) {
+        if (hour < 0 || hour > 23) throw new ArgumentOutOfRangeException();
+        if (minute < 0 || minute > 59) throw new ArgumentOutOfRangeException();
+        if (second < 0.0 || second >= 61.0) throw new ArgumentOutOfRangeException();
+
         _ticks = (hour * (long)3.6e10) + (minute * (long)6e8) + (long)(second * 1e7);
         _zoneOffset = zoneOffset;
 
