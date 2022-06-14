@@ -63,7 +63,7 @@ public class ISO8601Date : ISO8601 {
             return new ISO8601Date(){ WeekYear = int.Parse(groups[1].Value), Week = int.Parse(groups[2].Value) };
         }
 
-        var weekDayRegex = new Regex(@"^(\d{4})[-‐]W(\d{2})-(\d)$");
+        var weekDayRegex = new Regex(@"^(\d{4})[-‐]W(\d{2})[-‐](\d)$");
         if (weekDayRegex.IsMatch(spec)) {
             var groups = weekDayRegex.Match(spec).Groups;
             return new ISO8601Date(){ WeekYear = int.Parse(groups[1].Value), Week = int.Parse(groups[2].Value), WeekDay = int.Parse(groups[3].Value) };
@@ -111,6 +111,7 @@ public class ISO8601Date : ISO8601 {
 
                 if (WeekDay is int wd) {
                     // return $"{weekYearString}-W{w.ToString().PadLeft(2, '0')}-{wd}";
+                    // Instances with more than one equivalent representaion should all return the same one
                     return InclusiveStart.ToString("yyyy-MM-dd");
                 }
 
@@ -122,6 +123,7 @@ public class ISO8601Date : ISO8601 {
 
                 if (YearDay is int yd)
                     // return $"{yearString}-{yd.ToString().PadLeft(3, '0')}";
+                    // Instances with more than one equivalent representaion should all return the same one
                     return InclusiveStart.ToString("yyyy-MM-dd");
 
                 if (SubYearGrouping is int syg)
@@ -232,8 +234,14 @@ public class ISO8601Date : ISO8601 {
             if (value < 21 || value > 41)
                 throw new ArgumentOutOfRangeException();
 
-            // Can't implement hemisphere-independent seasons
-            if (value < 25) throw new NotImplementedException();
+            if (value < 25) {
+                // Can't implement hemisphere-independent seasons
+                // InclusiveStart = null;
+                // ExclusiveEnd = null;
+                // _subYearGrouping = value;
+                // return;
+                throw new NotImplementedException();
+            }
 
             if (Year is int y && value is int v) {
 
