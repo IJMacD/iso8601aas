@@ -16,7 +16,7 @@ public class IndexModel : PageModel
         if (input is string) {
             ViewData["InputString"] = input;
             try {
-                ViewData["Result"] = ISO8601.Parse(input);
+                ViewData["Result"] = ParseInput.TryParse(input);
             }
             catch {
                 ViewData["Error"] = "Unable to parse";

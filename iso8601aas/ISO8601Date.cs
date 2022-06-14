@@ -301,6 +301,22 @@ public class ISO8601Date : ISO8601 {
         }
     }
 
+    public bool Contains (ISO8601DateTime dateTime) {
+        return InclusiveStart <= dateTime.GetValue() && dateTime.GetValue() < ExclusiveEnd;
+    }
+
+    public bool Contains (ISO8601Date other) {
+        return InclusiveStart <= other.InclusiveStart && other.ExclusiveEnd <= ExclusiveEnd;
+    }
+
+    public bool Overlaps (ISO8601Date other) {
+        return InclusiveStart < other.ExclusiveEnd && other.InclusiveStart < ExclusiveEnd;
+    }
+
+    public bool Equals (ISO8601Date other) {
+        return InclusiveStart == other.InclusiveStart && ExclusiveEnd == other.ExclusiveEnd;
+    }
+
     public static ISO8601Date FromCentury (int century) {
         var start = new DateTime(century * 100, 1, 1);
         var end = start.AddYears(100);

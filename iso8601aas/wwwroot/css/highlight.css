@@ -27,7 +27,7 @@ code.hljs {
 .hljs-deletion,
 .hljs-keyword,
 .hljs-selector-tag {
-    color: #a1a0a0
+    color: #cf0000
 }
 
 .hljs-link,
@@ -93,7 +93,7 @@ code.hljs {
     .hljs-deletion,
     .hljs-keyword,
     .hljs-selector-tag {
-        color: #6a6a6a
+        color: #ff9a9a
     }
 
     .hljs-link,

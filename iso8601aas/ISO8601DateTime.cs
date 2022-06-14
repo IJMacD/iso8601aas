@@ -78,4 +78,16 @@ public class ISO8601DateTime : ISO8601 {
     }
 
     public static implicit operator ISO8601DateTime (string input) => Parse(input);
+
+    public DateTime GetValue () => _value;
+
+    public bool Equals (ISO8601DateTime other) => _value == other._value;
+
+    public static bool operator < (ISO8601DateTime left, ISO8601DateTime right) => left._value < right._value;
+
+    public static bool operator > (ISO8601DateTime left, ISO8601DateTime right) => left._value > right._value;
+
+    public static bool operator <= (ISO8601DateTime left, ISO8601DateTime right) => left._value <= right._value;
+
+    public static bool operator >= (ISO8601DateTime left, ISO8601DateTime right) => left._value >= right._value;
 }

@@ -156,4 +156,20 @@ public class ISO8601Time : ISO8601 {
 
         throw new FormatException();
     }
+
+    public override bool Equals (object? other) => other is ISO8601Time o && _ticks == o._ticks;
+
+    public override int GetHashCode () => (int)_ticks;
+
+    public static bool operator == (ISO8601Time left, ISO8601Time right) => left._ticks == right._ticks;
+
+    public static bool operator != (ISO8601Time left, ISO8601Time right) => left._ticks != right._ticks;
+
+    public static bool operator < (ISO8601Time left, ISO8601Time right) => left._ticks < right._ticks;
+
+    public static bool operator > (ISO8601Time left, ISO8601Time right) => left._ticks > right._ticks;
+
+    public static bool operator <= (ISO8601Time left, ISO8601Time right) => left._ticks <= right._ticks;
+
+    public static bool operator >= (ISO8601Time left, ISO8601Time right) => left._ticks >= right._ticks;
 }

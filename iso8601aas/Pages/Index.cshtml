@@ -31,7 +31,7 @@
     </div>
     }
 
-    @if (ViewData["Result"] is ISO8601 result)
+    @if (ViewData["Result"] is object result)
     {
     <div>
         <pre><code>@(DisplayResult(result))</code></pre>
@@ -41,7 +41,7 @@
 </div>
 
 @{
-    string DisplayResult (ISO8601 result) {
+    string DisplayResult (object result) {
         var options = new JsonSerializerOptions () { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
         string json;
