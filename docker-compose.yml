@@ -6,3 +6,4 @@ services:
     ports:
       - "8005:80"
     restart: always
+    mem_limit: 200m
