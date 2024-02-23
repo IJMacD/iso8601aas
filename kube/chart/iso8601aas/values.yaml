@@ -1,0 +1,10 @@
+hostname: "iso8601aas.ijmacd.com"
+web:
+  replicaCount: 1
+  repository:
+    image: docker.io/ijmacd/iso8601aas
+    tag: ""
+  tls:
+    enabled: false
+  local:
+    enabled: false

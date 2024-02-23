@@ -1,0 +1,10 @@
+hostname: "iso8601aas.localhost"
+web:
+  replicaCount: 1
+  repository:
+    image: k3d-registry.localhost:5111/ijmacd/iso8601aas
+    tag: ""
+  tls:
+    enabled: true
+  local:
+    enabled: false
