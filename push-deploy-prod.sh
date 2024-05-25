@@ -12,8 +12,8 @@ fi
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source ${SCRIPT_DIR}/vars.sh
 
-# Override
-export KUBECONFIG=~/.kube/config.prod
+CURRENT_CONTEXT=$(kubectl config current-context)
+echo "Deploying version $GIT_TAG to cluster $CURRENT_CONTEXT"
 
 for project in "${PROJECTS}"; do
   docker push ${REGISTRY_NAME}/${REPO}/${project}:${GIT_TAG}
