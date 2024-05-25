@@ -27,9 +27,4 @@ spec:
             - name: web
               containerPort: 80
           resources:
-            requests:
-              memory: 100Mi
-              cpu:  10m
-            limits:
-              memory: 250Mi
-              cpu: 20m
+{{ toYaml .Values.web.resources | indent 12 }}

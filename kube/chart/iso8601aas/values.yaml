@@ -8,3 +8,9 @@ web:
     enabled: false
   local:
     enabled: false
+  resources:
+    requests:
+      memory: 66Mi
+      cpu: 5m
+    limits:
+      memory: 66Mi
